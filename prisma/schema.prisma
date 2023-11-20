@@ -1,0 +1,98 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  email     String    @unique
+  avatar    avatars?  @relation(fields: [avatar_id], references: [id])
+  avatar_id Int?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  folders   folders[]
+}
+
+model avatars {
+  id        Int      @id @default(autoincrement())
+  name      String
+  style     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  users     users[]
+}
+
+model folders {
+  id        Int        @id @default(autoincrement())
+  user      users      @relation(fields: [user_id], references: [id])
+  user_id   Int
+  name      String
+  color     String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  projects  projects[]
+}
+
+model projects {
+  id        Int      @id @default(autoincrement())
+  folder    folders? @relation(fields: [folder_id], references: [id])
+  folder_id Int?
+  name      String
+  color     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  tasks     tasks[]
+}
+
+model tasks {
+  id          Int       @id @default(autoincrement())
+  name        String
+  project     projects? @relation(fields: [project_id], references: [id])
+  project_id  Int?
+  duration    String
+  status      status    @relation(fields: [status_id], references: [id])
+  status_id   Int
+  description String?
+  priority    priority  @relation(fields: [priority_id], references: [id])
+  priority_id Int
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  steps       steps[]
+}
+
+model status {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  tasks     tasks[]
+  steps     steps[]
+}
+
+model priority {
+  id        Int      @id @default(autoincrement())
+  name      String
+  color     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  tasks     tasks[]
+}
+
+model steps {
+  id        Int      @id @default(autoincrement())
+  name      String
+  status    status   @relation(fields: [status_id], references: [id])
+  status_id Int
+  task      tasks    @relation(fields: [task_id], references: [id])
+  task_id   Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
