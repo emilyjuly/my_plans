@@ -17,8 +17,6 @@ export class AvatarsService {
     const avatar = await this.prisma.avatars.findUnique({
       where: { id },
     });
-    avatar.createdAt.setHours(avatar.createdAt.getHours() - 3);
-    avatar.updatedAt.setHours(avatar.updatedAt.getHours() - 3);
     return avatar;
   }
 
