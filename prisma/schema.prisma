@@ -57,7 +57,7 @@ model tasks {
   name        String
   project     projects? @relation(fields: [project_id], references: [id])
   project_id  Int?
-  duration    String
+  duration    String?
   status      status    @relation(fields: [status_id], references: [id])
   status_id   Int
   description String?
